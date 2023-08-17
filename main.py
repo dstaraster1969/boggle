@@ -1,8 +1,8 @@
-from dice import Dice
+import dice
 
 
 def main():
-    print(Dice().dice)
+    print(dice.dice)
 
 
 if __name__ == '__main__':
