@@ -1,8 +1,8 @@
-import dice
+from board import Board
 
 
 def main():
-    print(dice.dice)
+    Board().setup_board()
 
 
 if __name__ == '__main__':
