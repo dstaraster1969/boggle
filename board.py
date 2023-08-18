@@ -1,3 +1,6 @@
+import random
+from copy import deepcopy
+
 from PyDictionary import PyDictionary
 
 from dice import Dice
@@ -15,11 +18,12 @@ class Board:
         self.words = []
 
     def setup_board(self):
-        dice_counter = 0
+        dice = Dice()
         for i in range(0, 4):
             for j in range(0, 4):
-                self.board[i][j] = Dice().roll_die(dice_counter)
-                dice_counter += 1
+                die = random.randint(0, len(dice.dice) - 1)
+                self.board[i][j] = dice.roll_die(die)
+                del dice.dice[die]
 
     def generate_list_of_words(self, word, i, j, coordinates_visited):
         word, finished = self.build_word(word, i, j)
