@@ -1,4 +1,3 @@
-import copy
 import random
 from copy import deepcopy
 
@@ -18,6 +17,7 @@ class Board:
             [0 for i in range(4)],
         ]
         self.words = []
+        self.iterations = 0
 
     def setup_board(self):
         dice = Dice()
@@ -27,13 +27,13 @@ class Board:
                 self.board[i][j] = dice.roll_die(die)
                 del dice.dice[die]
 
-    def find_all_words(self):
+    async def find_all_words(self):
         for i in range(4):
             for j in range(4):
-                self.check_word('', [], i, j)
+                await self.check_word('', [], i, j)
 
-    def check_word(self, word, coordinates_visited, i, j):
-        print(f'in check_word: i={i} j={j}')
+    async def check_word(self, word, coordinates_visited, i, j):
+        self.iterations += 1
         # i and/or j is off the board or has been used before
         if i < 0 or i > 3 or j < 0 or j > 3:
             return
@@ -46,62 +46,18 @@ class Board:
             if len(word) >= 3 and this_dict.check_for_whole_word(word):
                 self.words.append(word)
                 # don't return here because there could be additional words that start w/ this word
-            self.check_word(word, copy.deepcopy(coordinates_visited), i, j - 1)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i, j + 1)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i + 1, j - 1)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i + 1, j + 1)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i + 1, j)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i - 1, j)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i - 1, j - 1)
-            self.check_word(word, copy.deepcopy(coordinates_visited), i - 1, j + 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i, j - 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i, j + 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i + 1, j - 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i + 1, j + 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i + 1, j)
+            await self.check_word(word, deepcopy(coordinates_visited), i - 1, j)
+            await self.check_word(word, deepcopy(coordinates_visited), i - 1, j - 1)
+            await self.check_word(word, deepcopy(coordinates_visited), i - 1, j + 1)
         else:
             return
 
-
-
-
-
-
-    # def generate_list_of_words(self, word, i, j):
-    #     coordinates_visited = []
-    #     word = self.build_word(word, i, j)
-    #     coordinates_visited.append([i, j])
-    #     if len(word) >=3 and self.check_dictionary_for_word(word):
-    #         self.words.append(word)
-    #     coordinates = [i-1, j-1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i-1, j-1)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i-1, j]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i-1, j)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i-1, j+1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i-1, j+1)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i, j-1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i, j-1)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i, j+1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i, j+1)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i+1, j-1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i+1, j-1)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i+1, j]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i+1, j)
-    #         coordinates_visited.append(coordinates)
-    #     coordinates = [i+1, j+1]
-    #     if coordinates not in coordinates_visited and coordinates[0] >= 0 and coordinates[1] >= 0:
-    #         self.generate_list_of_words(word, i+1, j+1)
-    #         coordinates_visited.append(coordinates)
-
-    def build_word(self, word, i, j):
-        if 0 <= i < 4 and 0 <= j < 4:
-            return word + self.board[i][j]
-        return word
+    # def build_word(self, word, i, j):
+    #     if 0 <= i < 4 and 0 <= j < 4:
+    #         return word + self.board[i][j]
+    #     return word
