@@ -1,14 +1,9 @@
-import time
-
 import english_words
 
 
 class Dictionary:
     def __init__(self):
-        start = time.time()
         self.dictionary = sorted(english_words.get_english_words_set(['web2'], lower=True))
-        end = time.time()
-        print(f'time to sort: {end - start}')
 
     def check_for_whole_word(self, word):
         return word in self.dictionary
@@ -17,6 +12,9 @@ class Dictionary:
         for w in self.dictionary:
             if w.startswith(word):
                 return True
+            # if the given word isn't a prefix for the current dictionary word, check to see if
+            # the loop has gone past where the word could possibly be a prefix. This keeps the loop from continuing
+            # which improves perf
             if word < w:
                 return False
         return False

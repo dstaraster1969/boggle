@@ -2,6 +2,7 @@ from random import randint
 
 
 class Dice:
+    # These are the 16 dice used in boggle
     dice = [
         ['A', 'A', 'E', 'E', 'G', 'N'],
         ['A', 'O', 'O', 'T', 'T', 'W'],
