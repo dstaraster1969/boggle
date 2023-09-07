@@ -17,7 +17,7 @@ async def main():
 
     # Wait for all the calls return
     await board.find_all_words()
-    print(f'List of words found: {board.words}')
+    print(f'List of words found: {sorted(board.words)}')
     end = time.time()
 
     # Display the amount of time it took to run to demonstrate that it doesn't take more than 3 minutes

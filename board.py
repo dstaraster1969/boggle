@@ -13,7 +13,8 @@ class Board:
             [0 for i in range(4)],
             [0 for i in range(4)],
         ]
-        self.words = []
+        # Store words in a set so that the time to find a value is performant
+        self.words = set()
         self.iterations = 0
         self.dict = Dictionary()
 
@@ -39,8 +40,9 @@ class Board:
         coordinates_visited.append([i, j])
         word = (word + self.board[i][j]).lower()
         if self.dict.check_for_starts_with(word):
-            if len(word) >= 3 and self.dict.check_for_whole_word(word):
-                self.words.append(word)
+            # Boggle rules assert that a word needs to have at least 3 letters and no repeats
+            if len(word) >= 3 and self.dict.check_for_whole_word(word) and word not in self.words:
+                self.words.add(word)
                 # don't return here because there could be additional words that start w/ this word
             # use deepcopy because each array needs to be uniquely tied to a call to check_word()
             await self.check_word(word, deepcopy(coordinates_visited), i, j - 1)

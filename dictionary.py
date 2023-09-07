@@ -3,6 +3,9 @@ import english_words
 
 class Dictionary:
     def __init__(self):
+        # english_words is a dictionary that is stored in a set for cheap access.
+        # I am not familiar with the vast majority of the words, but any dictionary
+        # could be subbed in.
         self.dictionary = sorted(english_words.get_english_words_set(['web2'], lower=True))
 
     def check_for_whole_word(self, word):
